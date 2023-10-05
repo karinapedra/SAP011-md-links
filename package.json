@@ -1,5 +1,6 @@
 {
   "name": "md-links",
+  "type": "commonjs",
   "version": "0.1.0",
   "engines": {
     "node": ">=16.x"
@@ -17,7 +18,7 @@
   "scripts": {
     "lint": "npx eslint ./src",
     "test": "jest"
-  },
+    },
   "keywords": [
     "markdown",
     "links",
@@ -49,5 +50,10 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "esm": "^3.2.25",
+    "node-fetch": "^3.3.2"
   }
 }
