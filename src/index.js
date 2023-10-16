@@ -4,15 +4,26 @@ const path = require('path');
 const http = require('http');
 
 function extractLinks(markdownContent, file) {
-  const linkRegex = /(?:^|[^!])\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g;
+  const lines = markdownContent.split('\n');
   const links = [];
+  let currentTitle = null;
 
-  let match;
-  while ((match = linkRegex.exec(markdownContent)) !== null) {
-    const text = match[1];
-    const href = match[2];
-    links.push({ text, href, file });
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith('#')) {
+      currentTitle = line.replace(/#/g, '').trim();
+    } else if (line.match(/\[.*\]\(https?:\/\/[^\s)]+\)/)) {
+      const linkMatches = line.match(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g);
+      if (linkMatches) {
+        linkMatches.forEach((match) => {
+          const text = match.match(/\[(.*?)\]/)[1];
+          const href = match.match(/\((https?:\/\/[^\s)]+)\)/)[1];
+          links.push({ text, href, title: currentTitle, file });
+        });
+      }
+    }
   }
+
   return links;
 }
 
@@ -81,4 +92,8 @@ function mdLinks(filePath, options = {}) {
 }
 
 
-module.exports = mdLinks;
+module.exports = {
+  extractLinks,
+  validateLink,
+  mdLinks,
+};

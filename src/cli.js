@@ -1,10 +1,10 @@
-const mdLinks = require('./index');
+const mdLinks = require('./index').mdLinks;
 const yargs = require('yargs');
 const chalk = require('chalk');
 const log = console.log;
 
 const argv = yargs
-  .command('read-file', 'Read and analyze links in a Markdown file', (yargs) => {
+  .command('mdLinks <file>', 'Read and analyze links in a Markdown file', (yargs) => {
     yargs
       .positional('file', {
         describe: 'Path to the Markdown file',
@@ -23,7 +23,7 @@ const argv = yargs
   })
   .help().argv;
 
-const fileToRead = argv._[1];
+const fileToRead = argv.file;
 const options = {
   validate: argv.validate,
   stats: argv.stats,
@@ -41,16 +41,16 @@ mdLinks(fileToRead, options)
         if (options.validate) {
           if (result.ok) {
             validLinks++;
-            log(`${chalk.green.bold('[Valid]')}: ${result.href}`);
-            log(`${chalk.yellowBright.bold('[Text]')}: ${result.text}`);
-            if (result.title) {
-              log(`${chalk.blueBright.bold('[Title]')}: ${chalk.whiteBright(result.title)}`);
-            }
+            log(`${chalk.blueBright.bold('[Title]')}: ${chalk.whiteBright(result.title)}`);
+            log(`${chalk.yellowBright.bold('[Text]')}: ${chalk.whiteBright(result.text)}`);
+            log(`${chalk.green.bold('[Valid]')}: ${chalk.whiteBright(result.href)}`);
             log(`${chalk.bold('[Status]')}: ${chalk.greenBright.bold(result.status)}`);
             log('');
           } else {
             invalidLinks++;
-            console.error(`${chalk.red.bold('[Invalid]')}: ${chalk.whiteBright(result.href)}`);
+            log(`${chalk.blueBright.bold('[Title]')}: ${chalk.whiteBright(result.title)}`);
+            log(`${chalk.yellowBright.bold('[Text]')}: ${chalk.whiteBright(result.text)}`);
+            console.error(`${chalk.redBright.bold('[Invalid]')}: ${chalk.whiteBright(result.href)}`);
             console.error(`${chalk.bold('[Status]')}: ${chalk.redBright.bold(result.status)}`);
             log('');
           }
